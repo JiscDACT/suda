@@ -6,6 +6,7 @@ before_install:
 env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
 install:
   - pip install -r requirements.txt
+  - pip install pyinstaller
 script:
   - bash -c echo "Tests would go here"
 before_deploy:
