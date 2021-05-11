@@ -12,13 +12,21 @@ script:
 before_deploy:
   - pyinstaller -F suda.py
 deploy:
-  provider: releases
-  api_key:
-    secure: "ZitFPnsPSc+3+9uPW8m+rwo1jAJOV/fLGZBXjGmNadLcMlWRufn+W4J56OO+9HabR4py8c1WvbVZIhoctNO1h8EvwVE5/ubEz6tbI5P7f4i9JIHOBkcW5/+4iGRNUalnMwCJdUU8YSfJTkAIjjtdijhTSF0NCOJ6Z/ifzV997il9T+pfMvT9gklowiGNlMyiZ5w5fkcwRUPtKJkiBs9ypZ8f6XOSHpqjIE0SZvHaYiuQ5HMU1kVJHHSB+Ib9YuC86I9GD/EhRTMWIef5nj2ZziNoT35Ht6F2yDvVBtgvLokLElXqypnpAhRpXe7Lju0cK73dAc003SNg9WOH4V1yH9cloTv+fznGVzedhhf4N4GgZSxA3rO9O1vvhqgiNRSOYO9gY+lf+PwCBX5nLrMxfT1lBUt6ykFvOCIS6ppNyioUjSDOiEJ8TxGevUdLH697sVn8oVOqsXg2OST1JvRiWc2zLfHB5aRBb0I7mYtyT/ZXqnXMg42PbJjxinT0YOETmYFzYJ5GEbfJonpOX0vKIZoz7iQtzXp34/0fFlnUmAg3pUlR63SCS0PVJmYugk34dMdlqOcB31BG32IAK1VCiB4HUFYRamTZ/UYzxPAgLwfV5wG+5tnNYrTVE9b8KoJm7JH0/mx9fhUKqb9bcZKdc/kRvImXthV0z3nHw6LagBY="
-  file_glob: true
-  file: dist/suda.exe
-  skip_cleanup: true
-  draft: true
-  on:
-    all_branches: true
-    tags: true
+  - provider: pypi
+    user: $TEST_PYPI_USER
+    password: $TEST_PYPI_PASS
+    distributions: "sdist bdist_wheel"
+    skip_existing: true
+    on:
+      all_branches: true
+      tags: true
+  - provider: releases
+    api_key:
+      secure: "ZitFPnsPSc+3+9uPW8m+rwo1jAJOV/fLGZBXjGmNadLcMlWRufn+W4J56OO+9HabR4py8c1WvbVZIhoctNO1h8EvwVE5/ubEz6tbI5P7f4i9JIHOBkcW5/+4iGRNUalnMwCJdUU8YSfJTkAIjjtdijhTSF0NCOJ6Z/ifzV997il9T+pfMvT9gklowiGNlMyiZ5w5fkcwRUPtKJkiBs9ypZ8f6XOSHpqjIE0SZvHaYiuQ5HMU1kVJHHSB+Ib9YuC86I9GD/EhRTMWIef5nj2ZziNoT35Ht6F2yDvVBtgvLokLElXqypnpAhRpXe7Lju0cK73dAc003SNg9WOH4V1yH9cloTv+fznGVzedhhf4N4GgZSxA3rO9O1vvhqgiNRSOYO9gY+lf+PwCBX5nLrMxfT1lBUt6ykFvOCIS6ppNyioUjSDOiEJ8TxGevUdLH697sVn8oVOqsXg2OST1JvRiWc2zLfHB5aRBb0I7mYtyT/ZXqnXMg42PbJjxinT0YOETmYFzYJ5GEbfJonpOX0vKIZoz7iQtzXp34/0fFlnUmAg3pUlR63SCS0PVJmYugk34dMdlqOcB31BG32IAK1VCiB4HUFYRamTZ/UYzxPAgLwfV5wG+5tnNYrTVE9b8KoJm7JH0/mx9fhUKqb9bcZKdc/kRvImXthV0z3nHw6LagBY="
+    file_glob: true
+    file: dist/suda.exe
+    skip_cleanup: true
+    draft: true
+    on:
+      all_branches: true
+      tags: true
