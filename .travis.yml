@@ -1,0 +1,34 @@
+language: python
+
+cache: pip
+
+python:
+  - 3.6
+
+matrix:
+  include:
+  - python: 3.7
+    dist: xenial
+
+branches:
+  except:
+    - /^[0-9]+\.[0-9]+\.[0-9]+/
+
+install:
+  - pip install pipenv
+  - pipenv install --dev --skip-lock
+
+script:
+  pipenv run pytest -v
+
+after_success:
+
+deploy:
+  provider: pypi
+  user: $TEST_PYPI_USER
+  password: $TEST_PYPI_PASS
+  distributions: "sdist bdist_wheel"
+  skip_existing: true
+  on:
+    all_branches: true
+    tags: true
