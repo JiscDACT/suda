@@ -17,6 +17,10 @@ So a row which is unique in multiple ways will score highly.
 
 ## Usage
 
+### Python
+
+### Command line
+
 ## References
 
 Elliot, M. J., Manning, A. M., & Ford, R. W. (2002). A Computational Algorithm for Handling the Special Uniques Problem. International Journal of Uncertainty, Fuzziness and Knowledge Based System , 10 (5), 493-509.
