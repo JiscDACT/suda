@@ -16,7 +16,7 @@ deploy:
     user: $GITHUB_USER
     password: $GITHUB_PASS
     file_glob: true
-    file: dist/*.exe
+    file: dist/suda.exe
     skip_cleanup: true
     draft: true
     on:
