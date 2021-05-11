@@ -17,7 +17,7 @@ setup(
     long_description_content_type='text/markdown',
     install_requires=['pandas~=1.1.5'],
     entry_points={
-        'console_scripts': ['suda=auda:main'],
+        'console_scripts': ['suda=suda:main'],
     },
     classifiers=[
         'Development Status :: 4 - Beta',
