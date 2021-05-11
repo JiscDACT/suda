@@ -13,8 +13,8 @@ before_deploy:
   - pyinstaller -F suda.py
 deploy:
   - provider: releases
-    user: $GITHUB_USER
-    password: $GITHUB_PASS
+    api_key:
+      secure: "GdEVgC6AlWo04rZ53ZISCFPiQlhG+v6vE/3VhO27bt+M2aNwcRD65jTE459gUA/jccBz5rL9kpYjvyjarWdd560VAGQCbXyrZRteIZ5dDhPtcoEuFV2vTpq1bf70ijcH7U5qyq2WKeBhIwxZa1h6zZyHQKDXxIXCVUGTzvzeWdxFI15gABxDiHAyqnwH2ZciYtgLDwen0IWh41c48It4XNjZBgHhaCr+07RosEpmnXIdPESCLDl0IqJM3k49OFFLc0VIvOrcEAt4BBTT4Ir6njSpG5L4M8O6GSoqEqDm3P3IaZQk/xNrKJVJMSuVkgQw1Gus+FhGZeWri2O5Ib0nZF8bQbUFUUygBcwXLi8Li8Q6l7/WYs/fHffwiiBLDwANycytgoeiybS7thQ1usoVFdkxSyZPTQzuAqV5+Eke5Z0UqRhltHeDNuQUO7u35Ah5SOnIyznU8wtdCa6FFUWQD56+LJC2IbX4nYXbuCqDIRKLpbectA1yEO3dgNAFypbZnXFdz95ODl00F1TRuEpSjpzOj4Z0fRBCQHKB262PeUm6XE2QmXshWCsLfOf2OwOnKm5+c0yXyoLuRkXnyzgKl4Y4482PMpFNpw/cgwvn8jyGFDny2rDOzd/9vAcqyJbM1wUytUTne5i48Cyp2felW9QzueF/acY06ZpsNp03hNQ="
     file_glob: true
     file: dist/suda.exe
     skip_cleanup: true
