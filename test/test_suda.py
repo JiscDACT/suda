@@ -71,7 +71,6 @@ def test_suda(data):
 
 def test_suda_with_columns(data):
     results = suda(data, max_msu=2, columns=['gender', 'region', 'education'])
-    print(results)
     # check we get back columns we didn't include in SUDA calcs
     assert(results.loc[0].labourstatus == 'employed')
 

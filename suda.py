@@ -1,6 +1,9 @@
 import pandas as pd
 from math import factorial
 from itertools import combinations
+import argparse
+import os
+import logging
 
 
 def find_msu(dataframe, groups, aggregations, att):
@@ -76,3 +79,48 @@ def suda(dataframe, max_msu, dis=0.1, columns=None):
     dataframe = dataframe.fillna(0)
     return dataframe
 
+
+def main():
+    argparser = argparse.ArgumentParser(description='Special Uniques Detection Algorithm (SUDA) for Python.')
+    argparser.add_argument('input_path', metavar='<input>', type=str, nargs=1, default='input.csv',
+                           help='The name of the CSV data file to process')
+    argparser.add_argument('output_path', metavar='<output>', type=str, nargs='?', default='output.csv',
+                           help='The output file name')
+    argparser.add_argument('m', metavar='<m>', type=float, nargs='?', default=0.8,
+                           help='The largest minimum sample uniqueness (MSU) to test for.')
+    argparser.add_argument('columns', metavar='<columns>', type=str, nargs='?', default=None,
+                           help='The column to apply the algorithm to. Defaults to all columns.')
+    argparser.add_argument('d', metavar='<d>', type=float, nargs='?', default=0.1,
+                           help='The file-level disclosure intrusion score (DIS)')
+    args = argparser.parse_args()
+
+    # Defaults
+    input_path = vars(args)['input_path'][0]
+    output_path = vars(args)['output_path']
+    columns = vars(args)['columns']
+    param_m = vars(args)['m']
+    param_dis = vars(args)['d']
+
+    if isinstance(columns, str):
+        columns = [columns]
+
+    if not os.path.exists(input_path):
+        logging.error('Input data file does not exist')
+        exit()
+    else:
+        logging.info("Input data file: " + input_path)
+
+    logging.info("Output file: " + output_path)
+
+    # Load the dataset
+    input_data = pd.read_csv(input_path)
+
+    # Apply the perturbation
+    output_data = suda(dataframe=input_data, max_msu=param_m, dis=param_dis, columns=columns)
+
+    # Write the output
+    output_data.to_csv(output_path, encoding='UTF-8', index=False)
+
+
+if __name__ == "__main__":
+    main()
