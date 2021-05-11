@@ -12,6 +12,7 @@ script:
 before_deploy:
   - pyinstaller -F suda.py
 deploy:
+  - edge: true
   - provider: pypi
     user: $TEST_PYPI_USER
     password: $TEST_PYPI_PASS
