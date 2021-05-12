@@ -86,20 +86,23 @@ def main():
                            help='The name of the CSV data file to process')
     argparser.add_argument('output_path', metavar='<output>', type=str, nargs='?', default='output.csv',
                            help='The output file name')
-    argparser.add_argument('m', metavar='<m>', type=float, nargs='?', default=0.8,
+    argparser.add_argument('m', metavar='<m>', type=int, nargs='?', default=2,
                            help='The largest minimum sample uniqueness (MSU) to test for.')
-    argparser.add_argument('columns', metavar='<columns>', type=str, nargs='?', default=None,
-                           help='The column to apply the algorithm to. Defaults to all columns.')
     argparser.add_argument('d', metavar='<d>', type=float, nargs='?', default=0.1,
                            help='The file-level disclosure intrusion score (DIS)')
+    argparser.add_argument('c', metavar='<c>', type=str, nargs='*', default=None, action='append',
+                            help='The column to apply the algorithm to. Defaults to all columns.')
     args = argparser.parse_args()
 
     # Defaults
     input_path = vars(args)['input_path'][0]
     output_path = vars(args)['output_path']
-    columns = vars(args)['columns']
+    columns = vars(args)['c'][0]
     param_m = vars(args)['m']
     param_dis = vars(args)['d']
+
+    if len(columns) == 0:
+        columns = None
 
     if isinstance(columns, str):
         columns = [columns]
