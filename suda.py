@@ -16,36 +16,44 @@ def find_msu(dataframe, groups, aggregations, att):
     :param att: the total number of attributes (QIDs) in the dataset
     :return:
     """
-    df_copy = dataframe.copy()
+    df_copy = dataframe
     # 'nple' as we may be testing a group that's a single, a tuple, triple etc
     for nple in groups:
         nple = list(nple)
         cols = nple.copy()
-
         # Calculate the unique value counts (fK)
         cols.append('fK')
         value_counts = df_copy[nple].value_counts()
-        df_value_counts = pd.DataFrame(value_counts)
-        df_value_counts = df_value_counts.reset_index()
 
-        # Change the column names
-        df_value_counts.columns = cols
+        if value_counts.min() == 1:
+            df_value_counts = pd.DataFrame(value_counts)
+            df_value_counts = df_value_counts.reset_index()
 
-        # Add values for fM, MSU and SUDA
-        df_value_counts['fM'] = 0
-        df_value_counts['suda'] = 0
-        df_value_counts.loc[df_value_counts['fK'] == 1, 'fM'] = 1
-        df_value_counts.loc[df_value_counts['fK'] == 1, 'msu'] = len(nple)
-        df_value_counts.loc[df_value_counts['fK'] == 1, 'suda'] = factorial(att - len(nple))
+            # Change the column names
+            df_value_counts.columns = cols
 
-        # Merge the results into the dataframe
-        df_update = pd.merge(df_copy, df_value_counts, on=nple, how='left')
-        dataframe = pd.concat([dataframe, df_update]).groupby(level=0) \
-            .agg(aggregations)
+            # Add values for fM, MSU and SUDA
+            df_value_counts['fM'] = 0
+            df_value_counts['suda'] = 0
+            df_value_counts.loc[df_value_counts['fK'] == 1, 'fM'] = 1
+            df_value_counts.loc[df_value_counts['fK'] == 1, 'msu'] = len(nple)
+            df_value_counts.loc[df_value_counts['fK'] == 1, 'suda'] = factorial(att - len(nple))
+
+            # Merge the results into the dataframe
+            df_update = pd.merge(df_copy, df_value_counts, on=nple, how='left')
+            dataframe = pd.concat([dataframe, df_update]).groupby(level=0) \
+                .agg(aggregations)
+
+    if 'fM' not in dataframe.columns:
+        dataframe['fM'] = 0
+        dataframe['suda'] = 0
+        dataframe['fK'] = 0
+        dataframe['msu'] = 0
+        dataframe = dataframe.groupby(level=0).agg(aggregations)
     return dataframe
 
 
-def suda(dataframe, max_msu, dis=0.1, columns=None):
+def suda(dataframe, max_msu=2, dis=0.1, columns=None):
     """
     Special Uniqueness Detection Algorithm (SUDA)
     :param dataframe:
@@ -59,7 +67,13 @@ def suda(dataframe, max_msu, dis=0.1, columns=None):
     if columns is None:
         columns = dataframe.columns
 
+    for col in columns:
+        if dataframe[col].nunique() < 600:
+            dataframe[col] = dataframe[col].astype(pd.CategoricalDtype(ordered=True))
+
     att = len(columns)
+    if att > 20:
+        att = 20
 
     # Construct the aggregation array
     aggregations = {'msu': 'min', 'suda': 'sum', 'fK': 'min', 'fM': 'sum'}
