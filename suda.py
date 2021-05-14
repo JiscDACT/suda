@@ -18,38 +18,36 @@ def find_msu(dataframe, groups, aggregations, att):
     """
     df_copy = dataframe
     # 'nple' as we may be testing a group that's a single, a tuple, triple etc
+    df_updates = []
     for nple in groups:
         nple = list(nple)
         cols = nple.copy()
+
         # Calculate the unique value counts (fK)
         cols.append('fK')
-        value_counts = df_copy[nple].value_counts()
+        value_counts = df_copy[nple].groupby(nple, sort=False).size()
 
-        if value_counts.min() == 1:
+        if 1 in value_counts.values:
             df_value_counts = pd.DataFrame(value_counts)
             df_value_counts = df_value_counts.reset_index()
-
             # Change the column names
             df_value_counts.columns = cols
 
             # Add values for fM, MSU and SUDA
             df_value_counts['fM'] = 0
             df_value_counts['suda'] = 0
-            df_value_counts.loc[df_value_counts['fK'] == 1, 'fM'] = 1
-            df_value_counts.loc[df_value_counts['fK'] == 1, 'msu'] = len(nple)
-            df_value_counts.loc[df_value_counts['fK'] == 1, 'suda'] = factorial(att - len(nple))
+            df_value_counts.loc[df_value_counts['fK'] == 1, ['fM', 'msu', 'suda']] = \
+                [1, len(nple), factorial(att - len(nple))]
 
-            # Merge the results into the dataframe
+            # Collect results
             df_update = pd.merge(df_copy, df_value_counts, on=nple, how='left')
-            dataframe = pd.concat([dataframe, df_update]).groupby(level=0) \
-                .agg(aggregations)
+            df_updates.append(df_update)
 
-    if 'fM' not in dataframe.columns:
-        dataframe['fM'] = 0
-        dataframe['suda'] = 0
-        dataframe['fK'] = 0
-        dataframe['msu'] = 0
-        dataframe = dataframe.groupby(level=0).agg(aggregations)
+    # Apply results to the dataset
+    if len(df_updates) > 0:
+        updates = pd.concat(df_updates)
+        dataframe = pd.concat([dataframe, updates]).groupby(level=0).agg(aggregations)
+
     return dataframe
 
 
@@ -87,6 +85,11 @@ def suda(dataframe, max_msu=2, dis=0.1, columns=None):
         groups = list(combinations(columns, i))
         results.append(find_msu(dataframe, groups, aggregations, att))
 
+    if 'fM' not in dataframe.columns:
+        dataframe['fM'] = 0
+        dataframe['suda'] = 0
+        dataframe['fK'] = 0
+        dataframe['msu'] = 0
     dataframe = pd.concat(results).groupby(level=0).agg(aggregations)
     dataframe['dis-suda'] = 0
     dis_value = dis / dataframe.suda.sum()
@@ -136,7 +139,7 @@ def main():
     # Load the dataset
     input_data = pd.read_csv(input_path)
 
-    # Apply the perturbation
+    # Apply the algorithm
     output_data = suda(dataframe=input_data, max_msu=param_m, dis=param_dis, columns=columns)
 
     # Write the output

@@ -1,3 +1,4 @@
+import random
 import pandas as pd
 import pytest
 from suda import suda, find_msu
@@ -19,6 +20,15 @@ def data():
         {'gender': 'female', 'region': 'urban', 'education': 'secondary complete', 'labourstatus': 'non-LF'}
     ]
     return pd.DataFrame(persons)
+
+
+@pytest.fixture
+def large_data():
+    return pd.read_csv('test_data.csv')
+
+
+# def test_performance(large_data):
+#     suda(large_data, 4)
 
 
 def test_msu(data):
@@ -44,6 +54,7 @@ def test_msu(data):
 
 def test_suda(data):
     results = suda(data, max_msu=3)
+    print(results)
     assert (results.loc[0].msu == 0)
     assert (results.loc[1].msu == 0)
     assert (results.loc[2].msu == 1)
