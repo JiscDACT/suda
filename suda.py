@@ -62,6 +62,7 @@ def suda(dataframe, max_msu=2, dis=0.1, columns=None):
     :param columns: the set of columns to apply SUDA to. Defaults to None (all columns)
     :return:
     """
+    logger = logging.getLogger("suda")
 
     # Get the set of columns
     if columns is None:
@@ -73,6 +74,7 @@ def suda(dataframe, max_msu=2, dis=0.1, columns=None):
 
     att = len(columns)
     if att > 20:
+        logger.warning("More than 20 columns presented; setting ATT to max of 20")
         att = 20
 
     # Construct the aggregation array
@@ -95,6 +97,8 @@ def suda(dataframe, max_msu=2, dis=0.1, columns=None):
 
 
 def main():
+    logger = logging.getLogger("suda")
+
     argparser = argparse.ArgumentParser(description='Special Uniques Detection Algorithm (SUDA) for Python.')
     argparser.add_argument('input_path', metavar='<input>', type=str, nargs=1, default='input.csv',
                            help='The name of the CSV data file to process')
@@ -122,12 +126,12 @@ def main():
         columns = [columns]
 
     if not os.path.exists(input_path):
-        logging.error('Input data file does not exist')
+        logger.error('Input data file does not exist')
         exit()
     else:
-        logging.info("Input data file: " + input_path)
+        logger.info("Input data file: " + input_path)
 
-    logging.info("Output file: " + output_path)
+    logger.info("Output file: " + output_path)
 
     # Load the dataset
     input_data = pd.read_csv(input_path)
