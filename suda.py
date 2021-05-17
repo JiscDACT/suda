@@ -61,6 +61,7 @@ def suda(dataframe, max_msu=2, dis=0.1, columns=None):
     :return:
     """
     logger = logging.getLogger("suda")
+    logging.basicConfig()
 
     # Get the set of columns
     if columns is None:
@@ -85,11 +86,12 @@ def suda(dataframe, max_msu=2, dis=0.1, columns=None):
         groups = list(combinations(columns, i))
         results.append(find_msu(dataframe, groups, aggregations, att))
 
-    if 'fM' not in dataframe.columns:
-        dataframe['fM'] = 0
-        dataframe['suda'] = 0
-        dataframe['fK'] = 0
-        dataframe['msu'] = 0
+    # Domain completion
+    for result in results:
+        if 'fM' not in result.columns:
+            result['fM'] = 0
+            result['suda'] = 0
+
     dataframe = pd.concat(results).groupby(level=0).agg(aggregations)
     dataframe['dis-suda'] = 0
     dis_value = dis / dataframe.suda.sum()
