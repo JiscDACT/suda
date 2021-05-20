@@ -43,12 +43,10 @@ def find_msu(dataframe, groups, aggregations, att):
             df_update = pd.merge(df_copy, df_value_counts, on=nple, how='left')
             df_updates.append(df_update)
 
-    # Apply results to the dataset
+    # Return results
     if len(df_updates) > 0:
-        updates = pd.concat(df_updates)
-        dataframe = pd.concat([dataframe, updates]).groupby(level=0).agg(aggregations)
-
-    return dataframe
+        df_updates = pd.concat(df_updates)
+    return df_updates
 
 
 def suda(dataframe, max_msu=2, dis=0.1, columns=None):
@@ -84,21 +82,28 @@ def suda(dataframe, max_msu=2, dis=0.1, columns=None):
     results = []
     for i in range(1, max_msu+1):
         groups = list(combinations(columns, i))
-        results.append(find_msu(dataframe, groups, aggregations, att))
+        result = (find_msu(dataframe, groups, aggregations, att))
+        if len(result) != 0:
+            results.append(result)
 
     # Domain completion
     for result in results:
         if 'fM' not in result.columns:
             result['fM'] = 0
             result['suda'] = 0
+    dataframe['fM'] = 0
+    dataframe['suda'] = 0
 
-    dataframe = pd.concat(results).groupby(level=0).agg(aggregations)
-    dataframe['dis-suda'] = 0
-    dis_value = dis / dataframe.suda.sum()
-    dataframe.loc[dataframe['suda'] > 0, 'dis-suda'] = dataframe.suda * dis_value
+    # Concatenate all results
+    results.append(dataframe)
+    results = pd.concat(results).groupby(level=0).agg(aggregations)
 
-    dataframe = dataframe.fillna(0)
-    return dataframe
+    results['dis-suda'] = 0
+    dis_value = dis / results.suda.sum()
+    results.loc[dataframe['suda'] > 0, 'dis-suda'] = results.suda * dis_value
+
+    results = results.fillna(0)
+    return results
 
 
 def main():
