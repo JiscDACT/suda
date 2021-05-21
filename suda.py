@@ -86,6 +86,10 @@ def suda(dataframe, max_msu=2, dis=0.1, columns=None):
         if len(result) != 0:
             results.append(result)
 
+    if len(results) == 0:
+        logger.info("No special uniques found")
+        return dataframe
+
     # Domain completion
     for result in results:
         if 'fM' not in result.columns:

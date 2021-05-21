@@ -84,7 +84,6 @@ def test_suda_with_columns(data):
     results = suda(data, max_msu=2, columns=['gender', 'region', 'education'])
     # check we get back columns we didn't include in SUDA calcs
     assert(results.loc[0].labourstatus == 'employed')
-
     assert (results.loc[0].msu == 0)
     assert (results.loc[1].msu == 0)
     assert (results.loc[2].msu == 1)
@@ -108,3 +107,20 @@ def test_suda_with_columns(data):
     assert (results.loc[8].suda == 0)
     assert (results.loc[9].suda == 0)
     assert (results.loc[10].suda == 0)
+
+
+def test_suda_no_uniques():
+    persons = [
+        {'gender': 'female', 'region': 'urban', 'education': 'secondary incomplete', 'labourstatus': 'employed'},
+        {'gender': 'female', 'region': 'urban', 'education': 'secondary incomplete', 'labourstatus': 'employed'},        {'gender': 'female', 'region': 'urban', 'education': 'secondary incomplete', 'labourstatus': 'employed'},
+        {'gender': 'female', 'region': 'urban', 'education': 'secondary incomplete', 'labourstatus': 'employed'},
+        {'gender': 'female', 'region': 'urban', 'education': 'secondary incomplete', 'labourstatus': 'employed'},
+        {'gender': 'female', 'region': 'urban', 'education': 'secondary incomplete', 'labourstatus': 'employed'},
+        {'gender': 'female', 'region': 'urban', 'education': 'secondary incomplete', 'labourstatus': 'employed'},
+        {'gender': 'female', 'region': 'urban', 'education': 'secondary incomplete', 'labourstatus': 'employed'},
+        {'gender': 'female', 'region': 'urban', 'education': 'secondary incomplete', 'labourstatus': 'employed'},
+        {'gender': 'female', 'region': 'urban', 'education': 'secondary incomplete', 'labourstatus': 'employed'}
+    ]
+    df = pd.DataFrame(persons)
+    results = suda(df, max_msu=3)
+    assert(results.equals(df))
