@@ -88,6 +88,10 @@ def suda(dataframe, max_msu=2, dis=0.1, columns=None):
 
     if len(results) == 0:
         logger.info("No special uniques found")
+        dataframe["suda"] = 0
+        dataframe["msu"] = None
+        dataframe['fK'] = None
+        dataframe['fM'] = None
         return dataframe
 
     # Domain completion
