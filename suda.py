@@ -110,7 +110,7 @@ def suda(dataframe, max_msu=2, dis=0.1, columns=None):
     dis_value = dis / results.suda.sum()
     results.loc[dataframe['suda'] > 0, 'dis-suda'] = results.suda * dis_value
 
-    results = results.fillna(0)
+    results['msu'] = results['msu'].fillna(0)
     return results
 
 

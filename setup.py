@@ -1,6 +1,6 @@
 from setuptools import setup
 
-VERSION = '0.2.1'
+VERSION = '0.2.2'
 
 setup(
     name='suda',
@@ -15,7 +15,7 @@ setup(
                 'for measuring disclosure control risk in synthetic data',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
-    install_requires=['pandas~=1.1.5'],
+    install_requires=['pandas'],
     entry_points={
         'console_scripts': ['suda=suda:main'],
     },
@@ -24,7 +24,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Topic :: Scientific/Engineering :: Mathematics',
         'Topic :: Software Development :: Libraries :: Python Modules',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7'
+        'Programming Language :: Python :: 3.11'
     ]
 )
