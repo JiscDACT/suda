@@ -25,7 +25,7 @@ def find_msu(dataframe, groups, aggregations, att):
 
         # Calculate the unique value counts (fK)
         cols.append('fK')
-        value_counts = df_copy[nple].groupby(nple, sort=False).size()
+        value_counts = df_copy[nple].groupby(nple, sort=False, observed=False).size()
 
         if 1 in value_counts.values:
             df_value_counts = pd.DataFrame(value_counts)
